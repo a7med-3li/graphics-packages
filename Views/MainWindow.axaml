@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AvaloniaApplication1.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="AvaloniaApplication1.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DDA Line Algorithm">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="Auto,*,300" RowDefinitions="*">
+        <!-- Left Panel: Input Controls -->
+        <Border Grid.Column="0" Padding="10" VerticalAlignment="Top">
+            <StackPanel Spacing="10">
+                <TextBlock Text="DDA Line Algorithm" FontSize="16" FontWeight="Bold" />
+
+                <TextBlock Text="Point 1:" FontWeight="Bold" />
+                <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <TextBlock Text="X1:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Watermark="Enter X1" Text="{Binding X1}" />
+                    <TextBlock Grid.Row="1" Text="Y1:" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Watermark="Enter Y1" Text="{Binding Y1}" />
+                </Grid>
+
+                <TextBlock Text="Point 2:" FontWeight="Bold" Margin="0,10,0,0" />
+                <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
+                    <TextBlock Text="X2:" VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1" Watermark="Enter X2" Text="{Binding X2}" />
+                    <TextBlock Grid.Row="1" Text="Y2:" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Watermark="Enter Y2" Text="{Binding Y2}" />
+                </Grid>
+
+                <Button Command="{Binding DrawLineCommand}" Margin="0,20,0,0" Padding="10,8">DDA Line</Button>
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" Margin="0,10,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Center Panel: Canvas for Drawing -->
+        <Border Grid.Column="1" Background="White" BorderBrush="Black" BorderThickness="1" Margin="10">
+            <Canvas x:Name="drawingCanvas" Background="White" Width="600" Height="500" />
+        </Border>
+
+        <!-- Right Panel: Points List -->
+        <Border Grid.Column="2" Padding="10" Background="#000000">
+            <StackPanel Spacing="5">
+                <TextBlock Text="DDA Points" FontWeight="Bold" FontSize="14"/>
+                <ListBox ItemsSource="{Binding LinePoints}" Height="500" BorderThickness="1" BorderBrush="Gray">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</Window>
