@@ -19,23 +19,22 @@
             <StackPanel Spacing="10">
                 <TextBlock Text="DDA Line Algorithm" FontSize="16" FontWeight="Bold" />
 
-                <TextBlock Text="Point 1:" FontWeight="Bold" />
-                <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
-                    <TextBlock Text="X1:" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Watermark="Enter X1" Text="{Binding X1}" />
-                    <TextBlock Grid.Row="1" Text="Y1:" VerticalAlignment="Center" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Watermark="Enter Y1" Text="{Binding Y1}" />
-                </Grid>
+                <TextBlock Text="Start:" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBox Width="70" Watermark="X1" Text="{Binding X1}" />
+                    <TextBox Width="70" Watermark="Y1" Text="{Binding Y1}" />
+                </StackPanel>
 
-                <TextBlock Text="Point 2:" FontWeight="Bold" Margin="0,10,0,0" />
-                <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="5" RowSpacing="5">
-                    <TextBlock Text="X2:" VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1" Watermark="Enter X2" Text="{Binding X2}" />
-                    <TextBlock Grid.Row="1" Text="Y2:" VerticalAlignment="Center" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Watermark="Enter Y2" Text="{Binding Y2}" />
-                </Grid>
+                <TextBlock Text="End:" FontWeight="Bold" Margin="0,10,0,0" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <TextBox Width="70" Watermark="X2" Text="{Binding X2}" />
+                    <TextBox Width="70" Watermark="Y2" Text="{Binding Y2}" />
+                </StackPanel>
 
-                <Button Command="{Binding DrawLineCommand}" Margin="0,20,0,0" Padding="10,8">DDA Line</Button>
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,20,0,0">
+                    <Button Command="{Binding DrawLineCommand}" Padding="10,8">DDA Line</Button>
+                    <Button Command="{Binding DrawBresenhamCommand}" Padding="10,8">Bresenham</Button>
+                </StackPanel>
                 <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" Margin="0,10,0,0" />
             </StackPanel>
         </Border>
@@ -49,10 +48,15 @@
         <Border Grid.Column="2" Padding="10" Background="#000000">
             <StackPanel Spacing="5">
                 <TextBlock Text="DDA Points" FontWeight="Bold" FontSize="14"/>
-                <ListBox ItemsSource="{Binding LinePoints}" Height="500" BorderThickness="1" BorderBrush="Gray">
+                <ListBox ItemsSource="{Binding LinePoints}"
+                         Height="500"
+                         BorderThickness="1"
+                         BorderBrush="Gray"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" />
+                            <TextBlock Text="{Binding}" TextWrapping="NoWrap" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

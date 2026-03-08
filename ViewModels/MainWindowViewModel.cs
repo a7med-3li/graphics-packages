@@ -36,23 +36,15 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             ErrorMessage = string.Empty;
 
-            // Parse input values
-            if (!int.TryParse(X1, out int x1Val) || !int.TryParse(Y1, out int y1Val) ||
-                !int.TryParse(X2, out int x2Val) || !int.TryParse(Y2, out int y2Val))
+            if (!TryGetCoordinates(out int x1Val, out int y1Val, out int x2Val, out int y2Val))
             {
-                ErrorMessage = "Please enter valid integers for all coordinates";
                 return;
             }
 
             // Run DDA algorithm
             var points = CalculateDDALine(x1Val, y1Val, x2Val, y2Val);
 
-            // Update the points list
-            LinePoints.Clear();
-            foreach (var point in points)
-            {
-                LinePoints.Add($"Exact: ({point.xExact:F2}, {point.yExact:F2}) -> Rounded: ({point.xRounded}, {point.yRounded})");
-            }
+            UpdatePointsList(points);
 
             // Notify view to draw the line
             LineDrawn?.Invoke(points);
@@ -60,6 +52,53 @@ public partial class MainWindowViewModel : ViewModelBase
         catch (Exception ex)
         {
             ErrorMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private void DrawBresenham()
+    {
+        try
+        {
+            ErrorMessage = string.Empty;
+
+            if (!TryGetCoordinates(out int x1Val, out int y1Val, out int x2Val, out int y2Val))
+            {
+                return;
+            }
+
+            var points = CalculateBresenhamLine(x1Val, y1Val, x2Val, y2Val);
+
+            UpdatePointsList(points);
+
+            LineDrawn?.Invoke(points);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private bool TryGetCoordinates(out int x1Val, out int y1Val, out int x2Val, out int y2Val)
+    {
+        x1Val = y1Val = x2Val = y2Val = 0;
+
+        if (!int.TryParse(X1, out x1Val) || !int.TryParse(Y1, out y1Val) ||
+            !int.TryParse(X2, out x2Val) || !int.TryParse(Y2, out y2Val))
+        {
+            ErrorMessage = "Please enter valid integers for all coordinates";
+            return false;
+        }
+
+        return true;
+    }
+
+    private void UpdatePointsList(List<(float xExact, float yExact, int xRounded, int yRounded)> points)
+    {
+        LinePoints.Clear();
+        foreach (var point in points)
+        {
+            LinePoints.Add($"Exact: ({point.xExact:F2}, {point.yExact:F2}) -> Rounded: ({point.xRounded}, {point.yRounded})");
         }
     }
 
@@ -96,6 +135,49 @@ public partial class MainWindowViewModel : ViewModelBase
             points.Add((x, y, xRounded, yRounded));
             x += xIncrement;
             y += yIncrement;
+        }
+
+        return points;
+    }
+
+    /// <summary>
+    /// Bresenham line algorithm for integer grid plotting.
+    /// Supports all line directions and octants.
+    /// </summary>
+    private List<(float xExact, float yExact, int xRounded, int yRounded)> CalculateBresenhamLine(int x1, int y1, int x2, int y2)
+    {
+        var points = new List<(float, float, int, int)>();
+
+        int x = x1;
+        int y = y1;
+        int dx = Math.Abs(x2 - x1);
+        int dy = Math.Abs(y2 - y1);
+        int sx = x1 < x2 ? 1 : -1;
+        int sy = y1 < y2 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            points.Add((x, y, x, y));
+
+            if (x == x2 && y == y2)
+            {
+                break;
+            }
+
+            int e2 = 2 * err;
+
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y += sy;
+            }
         }
 
         return points;
